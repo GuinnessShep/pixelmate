@@ -18,6 +18,10 @@ jobs:
 
     - name: Install Dependencies
       run: npm install
+           npm audit fix --force
+
+    - name: Fix Linting Issues
+      run: npx eslint --fix ./src/index.js
 
     - name: Build Electron App
       run: npm run build
