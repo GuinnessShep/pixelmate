@@ -1,0 +1,34 @@
+name: test build 2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3.8.1
+      with:
+        node-version: '18'
+
+    - name: Install Dependencies
+      run: npm install
+
+    - name: Install electron-builder
+      run: npm install electron-builder --save-dev
+
+    - name: Build and Package App as DMG
+      run: npx electron-builder build --mac
+
+    - name: Upload DMG to GitHub Artifacts
+      uses: actions/upload-artifact@v3.1.3
+      with:
+        name: pixelmate-dmg
+        path: dist/*.dmg
