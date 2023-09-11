@@ -1,0 +1,36 @@
+name: Test build 3
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macOS-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3.8.1
+      with:
+        node-version: '18'
+
+    - name: Install Dependencies
+      run: npm install
+
+    - name: Build Electron App
+      run: npm run build
+
+    - name: Package App into DMG
+      run: |
+        npm install electron-packager -g
+        electron-packager . Pixelmate --platform=darwin --arch=x64 --overwrite --icon=public/app.icns
+        npm install electron-installer-dmg -g
+        electron-installer-dmg Pixelmate-darwin-x64/Pixelmate.app Pixelmate
+
+    - name: Upload DMG to GitHub Artifacts
+      uses: actions/upload-artifact@v3.1.3
+      with:
+        name: Pixelmate.dmg
+        path: Pixelmate.dmg
